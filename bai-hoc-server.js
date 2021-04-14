@@ -52,8 +52,8 @@ baiHocRoutes.route('/aiDo/').get(function(req, res) {
 })
 var ABCDEF='Dima'
 baiHocRoutes.route('/aiDo/'+ABCDEF).get(function(req, res) {
-  res.json('Xin chào '+so1);
-  console.log('Xin chào '+so1);
+  res.json('Xin chào '+ABCDEF);
+  console.log('Xin chào '+ABCDEF);
 })
 
 
