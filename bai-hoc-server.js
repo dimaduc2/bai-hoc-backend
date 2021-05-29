@@ -10,16 +10,7 @@ app.use(cors());
 
 app.use('/baiHoc', baiHocRoutes);		        //bảo Router chỉ nhận câu hỏi bắt đầu ‘/hanhDong
 
-
-
 const PORT = 5500;
-
-
-
-
-
-
-
 
 
 
@@ -39,90 +30,207 @@ app.get('/', (req, res) => {
   console.log('câu trả lời / của app');
 })
 
-
-baiHocRoutes.route('/chao/').get(function(req, res) {
-  res.json('Xin chào Dima, đây là Server bài học');
-  console.log('Xin chào Dima, đây là Server bài học');
+var ten = ''
+baiHocRoutes.route('/chao').get(function(req, res) {
+  ten=req.query.ten
+  if(ten===''){
+    res.json('Quên viết tên');
+    console.log('Quên viết tên');
+  }
+  else{
+    res.json('Xin chào '+ten+', đây là Server bài học');
+    console.log('Xin chào '+ten+', đây là Server bài học');
+  }
 })
 
-
-baiHocRoutes.route('/aiDo/').get(function(req, res) {
-  res.json('Tôi ko biết tên bạn là gì');
-  console.log('Tôi ko biết tên bạn là gì');
+baiHocRoutes.route('/aiDo').get(function(req, res) {
+  ten=req.query.ten
+  if(ten===''){
+    res.json('Ko biết tên bạn');
+    console.log('Ko biết tên bạn');
+  }
+  else{
+    res.json('Tên bạn là '+ten);
+    console.log('Tên bạn là '+ten);
+  }
 })
-var ABCDEF='Dima'
-baiHocRoutes.route('/aiDo/'+ABCDEF).get(function(req, res) {
-  res.json('Xin chào '+ABCDEF);
-  console.log('Xin chào '+ABCDEF);
+
+var taoDatabase =             {day:'Thứ hai',   taoRa: 'Tạo Database.',               lamGi: 'Tạo DB Pokemon, ở MongoDB, ở máy xa, Atlas.', diem: 20, lamXongCHua:true}
+var taoServerMoi =            {day:'Thứ năm',   taoRa: 'Tạo Server mới.',             lamGi: 'Tạo Sever, ở máy của mình.',                  diem: 80, lamXongCHua:true}
+var themThongTinVaoServer =   {day:'Thứ sáu',   taoRa: 'Thêm thông tin vào Server.',  lamGi: 'Tạo thông tin.',                              diem: 40, lamXongCHua:false}
+var react =                   {day:'Thứ hai',   taoRa: 'Tạo React.',                  lamGi: 'Tạo trag web để USE bấm.',                    diem: 10, lamXongCHua:false}
+var baiTap = [taoDatabase, taoServerMoi, themThongTinVaoServer, react];
+var ABCDEF = [1, 22, 3, 4, 5, 6, 7, 8, 9]
+baiHocRoutes.route('/baiTap').get(function(req, res) {
+  var soArray=req.query.soArray-1
+  if(soArray<0 || soArray>baiTap.length-1){
+    res.json('Không có bài tập số '+(soArray+1))
+  }
+  else{
+    console.log(baiTap[soArray].day);
+    console.log(baiTap[soArray].taoRa);
+    console.log(baiTap[soArray].lamGi);
+    console.log(baiTap[soArray].diem);
+    console.log(baiTap[soArray].lamXongCHua);
+    console.log({'ketQuaSoArray': baiTap[soArray]})
+    res.json({'ketQuaSoArray': baiTap[soArray]})
+  }
 })
 
+baiHocRoutes.route('/tatCaBaiTap').get(function(req, res) {
+  console.log('Tất cả bài tập: '+'<br/><br/>'+baiTap)
+  res.json({'tatCaSoArray': baiTap})
+})
 
+baiHocRoutes.route('/diemTrungBinh').get(function(req, res) {
+  var tổngDiem = 0;
+  for(i=0; i<baiTap.length; i++){
+    tổngDiem += baiTap[i].diem
+    console.log('tinhDiem: ' + tổngDiem)
+  }
   
-// var ABCDEF=
-// baiHocRoutes.route('/aiDo/'+ABCDEF).get(function(req, res) {
+  res.json({'tinhDiem': tổngDiem/baiTap.length})
+})
 
-//   if(ABCDEF='Dima'){
-//     // res.json('Tôi ko biết tên bạn là gì');
-//     res.json('Xin chào '+ABCDEF);
-    
-//   }else{
-//     // res.json('Xin chào '+ABCDEF);
-//     res.json('Tôi ko biết tên bạn là gì');
-    
+baiHocRoutes.route('/timDiemCao').get(function(req, res) {
+  // var diemArray = []  
+  // for(i=0; i<baiTap.length; i++){
+  //   diemArray.push(baiTap[i].diem)
+  // }
+  // var maxInNumbers = Math.max.apply(Math, diemArray); 
+  // res.json({'soDiemCaoNhat': maxInNumbers})
+
+  var diemCaoNhat = 0
+  console.log(diemCaoNhat)
+  for(i=0; i<baiTap.length; i++){
+    if(baiTap[i].diem > diemCaoNhat){
+      diemCaoNhat=baiTap[i].diem
+    }
+    console.log(diemCaoNhat)
+  }
+  res.json({'soDiemCaoNhat': diemCaoNhat})
+})
+
+baiHocRoutes.route('/timDiemThap').get(function(req, res) {
+  // var diemArray = []  
+  // for(i=0; i<baiTap.length; i++){
+  //   diemArray.push(baiTap[i].diem)
+  // }
+  // var minInNumbers = Math.min.apply(Math, diemArray); 
+  // res.json({'soDiemThapNhat': minInNumbers})
+
+  var diemNhoNhat = baiTap[0].diem
+  console.log(diemNhoNhat)
+  for(i=0; i<baiTap.length; i++){
+    if(baiTap[i].diem < diemNhoNhat){
+      diemNhoNhat=baiTap[i].diem
+    }
+    console.log(diemNhoNhat)
+  }
+  res.json({'soDiemThapNhat': diemNhoNhat})
+})
+
+
+
+baiHocRoutes.route('/baiTap/timBaiTap/').get(function(req, res) {
+  let ngay = req.query.ngay;
+  let cauTraLoi = {'ketQuaDaTimBaiTap': [], 'kqNgay':ngay};
+  // console.log('Đã tìm bài vào ' +ngay)
+  for(i=0; i<baiTap.length; i++){
+    if(ngay==baiTap[i].day){
+      console.log('Đã tìm bài vào ' +ngay+ ' là: '+baiTap[i])
+      cauTraLoi.ketQuaDaTimBaiTap.push(baiTap[i])
+    }
+    else {
+      console.log('Không tìm thấy bài nào trong ngày '+'Không tìm thấy bài nào')
+      // cauTraLoi.ketQuaDaTimBaiTap.push('Không có bài nào')
+    }
+  }
+  res.json(cauTraLoi)
+})
+
+
+
+
+baiHocRoutes.route('/baiTap/themChuMoi/').post(function(req, res) {
+  console.log('ngayMoi=' +req.body.ngay+'&tenMoi='+req.body.ten+'&lamGiMoi='+req.body.lamGi+'&diemMoi='+req.body.diem+'&TrueFalse='+req.body.LXC)
+
+  let ngayMoi = req.body.ngay;
+  console.log('đã thêm ngày mới là: '+ngayMoi)
+
+  let tenMoi = req.body.ten;
+  console.log('đã thêm tên mới là: '+tenMoi)
+
+  let lamGiMoi = req.body.lamGi;
+  console.log('đã thêm làm gì mới là: '+lamGiMoi)
+
+  let diemMoi = req.body.diem;
+  console.log('đã thêm điểm mới là: '+diemMoi)
+
+  let TrueFalse = req.body.LXC;
+  if(TrueFalse === 'Chưa làm xong bài'){
+    TrueFalse=false
+    console.log('đã thêm True Fale là: '+TrueFalse)
+  }
+  else if (TrueFalse==='Làm xong bài'){
+    TrueFalse=true
+    console.log('đã thêm True Fale là: '+TrueFalse)
+  }
+
+
+  // res.json({'ketQuaChuNgayMoi':ngayMoi, 'ketQuaChuTenMoi':tenMoi, 'ketQuaChuLamGiMoiMoi':lamGiMoi})
+
+  var taoChuMoi = {day:ngayMoi, taoRa:tenMoi, lamGi:lamGiMoi, diem:Number(diemMoi), lamXongCHua:TrueFalse}
+  baiTap.push(taoChuMoi)
+  console.log({baiTap})
+  res.json({'ketQuaChuMoi':baiTap[baiTap.length-1], 'ketQuaBaoNhieuBai':baiTap.length})
+  
+})
+
+
+// baiHocRoutes.route('/baiTap/themChuMoi/').get(function(req, res) {
+//   let ngayMoi = req.query.ngayMoi;
+//   console.log('đã thêm ngày mới là: '+ngayMoi)
+
+//   let tenMoi = req.query.tenMoi;
+//   console.log('đã thêm tên mới là: '+tenMoi)
+
+//   let lamGiMoi = req.query.lamGiMoi;
+//   console.log('đã thêm làm gì mới là: '+lamGiMoi)
+
+//   let diemMoi = req.query.diemMoi;
+//   console.log('đã thêm điểm mới là: '+diemMoi)
+
+//   let TrueFalse = req.query.TrueFalse;
+//   if(TrueFalse === 'Chưa làm xong bài'){
+//     TrueFalse=false
+//     console.log('đã thêm True Fale là: '+TrueFalse)
+//   }
+//   else if (TrueFalse==='Làm xong bài'){
+//     TrueFalse=true
+//     console.log('đã thêm True Fale là: '+TrueFalse)
 //   }
 
+
+//   // res.json({'ketQuaChuNgayMoi':ngayMoi, 'ketQuaChuTenMoi':tenMoi, 'ketQuaChuLamGiMoiMoi':lamGiMoi})
+
+//   var taoChuMoi = {day:ngayMoi, taoRa:tenMoi, lamGi:lamGiMoi, diem:diemMoi, lamXongCHua:TrueFalse}
+//   baiTap.push(taoChuMoi)
+//   console.log({baiTap})
+//   res.json({'ketQuaChuMoi':baiTap[baiTap.length-1 ], 'ketQuaBaoNhieuBai':baiTap.length})
+  
 // })
 
 
-  // if(ABCDEF=''){
-  //   baiHocRoutes.route('/aiDo/'+ABCDEF).get(function(req, res) {
-  //   res.json('Tôi ko biết tên bạn là gì');
-  //   })
-  // }else if(ABCDEF=ABCDEF){
-  //   baiHocRoutes.route('/aiDo/'+ABCDEF).get(function(req, res) {
-  //   res.json('Xin chào '+ABCDEF);
-  //   })
-  // }
 
 
 
+// baiHocRoutes.route('/baiTap/themTen/').get(function(req, res) {
+//   let tenMoi = req.query.tenMoi;
+//   console.log('đã thêm tên mới là: '+tenMoi)
+//   // res.json({'ketQuaChuMoi':'Đã thêm chữ mới là: '+tenMoi})
+//   baiTap.push(tenMoi)
+//   console.log(baiTap)
+//   // res.json({'ketQuaChuMoi':'Đã thêm chữ mới là: '+baiTap})
+// })
 
-var tenBaiTap = ['tạo Database', 'tạo Server mới', 'thêm thông tin vào Server'];
-
-baiHocRoutes.route('/baiTap/0').get(function(req, res) {
-  res.send(tenBaiTap[0])
-})
-baiHocRoutes.route('/baiTap/1').get(function(req, res) {
-  res.send(tenBaiTap[1])
-})
-baiHocRoutes.route('/baiTap/2').get(function(req, res) {
-  res.send(tenBaiTap[2])
-})
-
-// if(soArray = '0'){
-//   var soArray = '0'
-//   baiHocRoutes.route('/baiTap/'+soArray).get(function(req, res) {
-//     res.send(tenBaiTap[soArray])
-//   })
-// }
-// if(soArray = '1'){
-//   var soArray = '1'
-//   baiHocRoutes.route('/baiTap/'+soArray).get(function(req, res) {
-//     res.send(tenBaiTap[soArray])
-//   })
-// }
-// if(soArray = '2'){
-//   var soArray = '2'
-//   baiHocRoutes.route('/baiTap/'+soArray).get(function(req, res) {
-//     res.send(tenBaiTap[soArray])
-//   })
-// }
-
-
-// for(var soArray = 0; soArray<=tenBaiTap.length; soArray++){
-//   if(soArray = '0'){
-//     baiHocRoutes.route('/baiTap/'+0).get(function(req, res) {
-//       res.send(tenBaiTap[soArray])
-//     })
-//   }
-// }
