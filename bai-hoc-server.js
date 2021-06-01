@@ -13,12 +13,27 @@ app.use('/baiHoc', baiHocRoutes);		        //bảo Router chỉ nhận câu hỏ
 const PORT = 5500;
 
 
-
-
 // server bắt đầu nghe và đợi câu hỏi ở phòng PORT 5500
 app.listen(PORT, function() {		          //chạy Web Server ở địa chỉ phòng này
   console.log("đã bắt đầu server của bai hoc đang đợi câu hỏi và ở phòng Port: " + PORT);
 });
+
+
+// Chỉ hiện trên mạng: http://localhost:5500/baiHoc/inNhieuLan?ten=ABCDEFG&soLan=5
+baiHocRoutes.route('/inNhieuLan/').get(function(req, res) {
+  let ten = req.query.ten;
+  let soLan = req.query.soLan;
+  // res.send('Có ' + soLan+ ' lần tên ' + ten)
+  var text = "";
+  var i;
+  for(i = 0; i < soLan; i++){
+    text += ten+'<br/>';
+  }
+  res.send(text);
+  console.log(text);
+})
+
+
 
 baiHocRoutes.route('/').get(function(req, res) {
   res.send('câu trả lời / của router');
@@ -186,6 +201,44 @@ baiHocRoutes.route('/baiTap/themChuMoi/').post(function(req, res) {
   res.json({'ketQuaChuMoi':baiTap[baiTap.length-1], 'ketQuaBaoNhieuBai':baiTap.length})
   
 })
+
+
+
+
+
+
+
+baiHocRoutes.route('/cong/').get(function(req, res) {
+  let so1 = req.query.so1;
+  let so2 = req.query.so2;
+  res.json({'ketQua': Number(so1) +' + '+ Number(so2) +' = '+ (Number(so1) + Number(so2))})
+  // res.send('đã nhận câu hỏi cộng 2 số: '+so1+' và '+so2+' ra '+( Number(so1) + Number(so2) ));
+  console.log('đã nhận câu hỏi cộng 2 số: '+so1+' và '+so2+' ra '+( Number(so1) + Number(so2) ));
+})
+baiHocRoutes.route('/tru/').get(function(req, res) {
+  let so1 = req.query.so1;
+  let so2 = req.query.so2;
+  res.json({'ketQua': Number(so1) +' - '+ Number(so2) +' = '+ (Number(so1) - Number(so2))})
+  // res.send('đã nhận câu hỏi trừ 2 số: '+so1+' và '+so2+' ra '+( Number(so1) - Number(so2) ));
+  console.log('đã nhận câu hỏi trừ 2 số: '+so1+' và '+so2+' ra '+( Number(so1) - Number(so2) ));
+})
+baiHocRoutes.route('/nhan/').get(function(req, res) {
+  let so1 = req.query.so1;
+  let so2 = req.query.so2;
+  res.json({'ketQua': Number(so1) +' * '+ Number(so2) +' = '+ (Number(so1) * Number(so2))})
+  // res.send('đã nhận câu hỏi nhân 2 số: '+so1+' và '+so2+' ra '+( Number(so1) * Number(so2) ));
+  console.log('đã nhận câu hỏi nhân 2 số: '+so1+' và '+so2+' ra '+( Number(so1) * Number(so2) ));
+})
+baiHocRoutes.route('/chia/').get(function(req, res) {
+  let so1 = req.query.so1;
+  let so2 = req.query.so2;
+  res.json({'ketQua': Number(so1) +' / '+ Number(so2) +' = '+ (Number(so1) / Number(so2))})
+  // res.send('đã nhận câu hỏi chia 2 số: '+so1+' và '+so2+' ra '+( Number(so1) / Number(so2) ));
+  console.log('đã nhận câu hỏi chia 2 số: '+so1+' và '+so2+' ra '+( Number(so1) / Number(so2) ));
+})
+
+
+
 
 
 // baiHocRoutes.route('/baiTap/themChuMoi/').get(function(req, res) {
