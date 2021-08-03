@@ -10,6 +10,8 @@ app.use(cors());
 
 app.use('/baiHoc', baiHocRoutes);		        //bảo Router chỉ nhận câu hỏi bắt đầu ‘/hanhDong
 
+let starWarsModel = require('./star-wars.model');
+
 const PORT = 5500;
 
 
@@ -76,21 +78,21 @@ var themThongTinVaoServer =   {day:'Thứ sáu',   taoRa: 'Thêm thông tin vào
 var react =                   {day:'Thứ hai',   taoRa: 'Tạo React.',                  lamGi: 'Tạo trag web để USE bấm.',                    diem: 10, lamXongCHua:false}
 var baiTap = [taoDatabase, taoServerMoi, themThongTinVaoServer, react];
 var ABCDEF = [1, 22, 3, 4, 5, 6, 7, 8, 9]
-baiHocRoutes.route('/baiTap').get(function(req, res) {
-  var soArray=req.query.soArray-1
-  if(soArray<0 || soArray>baiTap.length-1){
-    res.json('Không có bài tập số '+(soArray+1))
-  }
-  else{
-    console.log(baiTap[soArray].day);
-    console.log(baiTap[soArray].taoRa);
-    console.log(baiTap[soArray].lamGi);
-    console.log(baiTap[soArray].diem);
-    console.log(baiTap[soArray].lamXongCHua);
-    console.log({'ketQuaSoArray': baiTap[soArray]})
-    res.json({'ketQuaSoArray': baiTap[soArray]})
-  }
-})
+// baiHocRoutes.route('/baiTap').get(function(req, res) {
+//   var soArray=req.query.soArray-1
+//   if(soArray<0 || soArray>baiTap.length-1){
+//     res.json('Không có bài tập số '+(soArray+1))
+//   }
+//   else{
+//     console.log(baiTap[soArray].day);
+//     console.log(baiTap[soArray].taoRa);
+//     console.log(baiTap[soArray].lamGi);
+//     console.log(baiTap[soArray].diem);
+//     console.log(baiTap[soArray].lamXongCHua);
+//     console.log({'ketQuaSoArray': baiTap[soArray]})
+//     res.json({'ketQuaSoArray': baiTap[soArray]})
+//   }
+// })
 
 baiHocRoutes.route('/tatCaBaiTap').get(function(req, res) {
   console.log('Tất cả bài tập: '+'<br/><br/>'+baiTap)
@@ -147,10 +149,10 @@ baiHocRoutes.route('/timDiemThap').get(function(req, res) {
 
 
 
-baiHocRoutes.route('/baiTap/timBaiTap/').get(function(req, res) {
+baiHocRoutes.route('/baiTap/').get(function(req, res) {
   let ngay = req.query.ngay;
   let cauTraLoi = {'ketQuaDaTimBaiTap': [], 'kqNgay':ngay};
-  // console.log('Đã tìm bài vào ' +ngay)
+  console.log('Đã tìm bài vào ' +ngay)
   for(i=0; i<baiTap.length; i++){
     if(ngay==baiTap[i].day){
       console.log('Đã tìm bài vào ' +ngay+ ' là: '+baiTap[i])
@@ -166,8 +168,17 @@ baiHocRoutes.route('/baiTap/timBaiTap/').get(function(req, res) {
 
 
 
+baiHocRoutes.route('/baiTap/:idMuonSua').put(function(req, res) {
+  console.log('đã sửa')
+  res.json('đã sửa')
+})
+baiHocRoutes.route('/baiTap/:idMuonXoa').delete(function(req, res) {
+  console.log('đã xóa')
+  res.json('đã xóa')
+})
 
-baiHocRoutes.route('/baiTap/themChuMoi/').post(function(req, res) {
+
+baiHocRoutes.route('/baiTap/').post(function(req, res) {
   console.log('ngayMoi=' +req.body.ngay+'&tenMoi='+req.body.ten+'&lamGiMoi='+req.body.lamGi+'&diemMoi='+req.body.diem+'&TrueFalse='+req.body.LXC)
 
   let ngayMoi = req.body.ngay;
@@ -286,4 +297,51 @@ baiHocRoutes.route('/chia/').get(function(req, res) {
 //   console.log(baiTap)
 //   // res.json({'ketQuaChuMoi':'Đã thêm chữ mới là: '+baiTap})
 // })
+
+
+
+baiHocRoutes.route('/starWars/').get(function(req, res) {
+  let name = req.query.name;
+  let gender = req.query.gender;
+  let species = req.query.species;
+  let lightsaber = req.query.lightsaber;
+  
+  console.log('Đã tìm danh sách Star Wars')
+  console.log(name+' '+gender+' '+species+' '+lightsaber)
+  
+})
+
+baiHocRoutes.route('/starWars2/').get(function(req, res) {
+  let nameStarWars = req.query.nameStarWars
+  console.log(nameStarWars)
+  starWarsModel.find({}, function(err, timNguoi){
+    if (err) {
+      console.log(err);
+      res.json('Không kết nối với MongoDB')
+    }
+    else {
+      console.log('đã tìm thấy ' + timNguoi.length + ' người')
+    }
+  }).sort({[nameStarWars]:1, name:1})
+})
+
+
+
+
+
+
+baiHocRoutes.route('/starWars/:idMuonXoa').delete(function(req, res) {
+  let id = req.params.idMuonXoa;
+  console.log(id)
+})
+
+baiHocRoutes.route('/starWars/').post(function(req, res) {
+  console.log(req.body)
+})
+
+baiHocRoutes.route('/starWars/:idMuonSua').put(function(req, res) {
+    res.json('Đã sửa')
+})
+
+
 
