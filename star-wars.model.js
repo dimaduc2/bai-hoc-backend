@@ -11,5 +11,5 @@ let starWarsModel = new Schema(
   },
   {collection: 'Star Wars'}          //tên của collection trong MongoDB
 );
-starWarsModel.index({name:'text', gender: 'text', species: 'text', lightsaber: 'text', image:'text'})
+starWarsModel.index({name:'text', image:'text', gender: 'text', species: 'text', lightsaber: 'text'})
 module.exports = mongoose.model('Star Wars', starWarsModel);

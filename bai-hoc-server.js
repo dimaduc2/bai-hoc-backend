@@ -12,8 +12,21 @@ app.use('/baiHoc', baiHocRoutes);		        //bảo Router chỉ nhận câu hỏ
 
 let starWarsModel = require('./star-wars.model');
 
+const mongoose = require('mongoose');     //phải mượn Mongoose
+
 const PORT = 5500;
 
+
+mongoose.connect('mongodb+srv://dima:dimaduc@cluster0.ybo8t.mongodb.net/pokedex-db?retryWrites=true&w=majority', { useNewUrlParser: true })
+        .catch(error => console.log('không kết nối được với mongoDB: ' + error));
+        // nếu không kết nối được thì thông báo lỗi
+const connection = mongoose.connection; //  <=> giữa server và DB
+
+// sau đó, mở kết nối để 2 bên nói chuyện
+// hiện ra, thông báo là nói chuyện đc rồi
+connection.once('open', function() {
+  console.log("Đã nói chuyện với MongoDB");    
+})
 
 // server bắt đầu nghe và đợi câu hỏi ở phòng PORT 5500
 app.listen(PORT, function() {		          //chạy Web Server ở địa chỉ phòng này
@@ -77,7 +90,9 @@ var taoServerMoi =            {day:'Thứ năm',   taoRa: 'Tạo Server mới.',
 var themThongTinVaoServer =   {day:'Thứ sáu',   taoRa: 'Thêm thông tin vào Server.',  lamGi: 'Tạo thông tin.',                              diem: 40, lamXongCHua:false}
 var react =                   {day:'Thứ hai',   taoRa: 'Tạo React.',                  lamGi: 'Tạo trag web để USE bấm.',                    diem: 10, lamXongCHua:false}
 var baiTap = [taoDatabase, taoServerMoi, themThongTinVaoServer, react];
-var ABCDEF = [1, 22, 3, 4, 5, 6, 7, 8, 9]
+var ABCDEF = [{name:'Anakin', gender: 'Male'}, {name:'Padme', gender: 'Female'}, {name:'Luke', gender: 'Male'}, {name:'Leia', gender: 'Female'}, {name:'Vader', gender: 'Male'}, ];
+// var ABCDEF = ['Anakin', 'Padme', 'Luke', 'Leia', 'Vader'];
+
 // baiHocRoutes.route('/baiTap').get(function(req, res) {
 //   var soArray=req.query.soArray-1
 //   if(soArray<0 || soArray>baiTap.length-1){
@@ -314,6 +329,7 @@ baiHocRoutes.route('/starWars/').get(function(req, res) {
 baiHocRoutes.route('/starWars2/').get(function(req, res) {
   let nameStarWars = req.query.nameStarWars
   console.log(nameStarWars)
+  // res.json(nameStarWars)
   starWarsModel.find({}, function(err, timNguoi){
     if (err) {
       console.log(err);
@@ -321,27 +337,62 @@ baiHocRoutes.route('/starWars2/').get(function(req, res) {
     }
     else {
       console.log('đã tìm thấy ' + timNguoi.length + ' người')
+      res.json(timNguoi)
     }
   }).sort({[nameStarWars]:1, name:1})
 })
 
 
 
+baiHocRoutes.route('/starWars3/').get(function(req, res) {
+  let nameStarWars = req.query.nameStarWars;
+  
+
+  text ='name: '+ABCDEF[0].name+', Gender: '+ABCDEF[0].gender+';  '+
+        'name: '+ABCDEF[1].name+', Gender: '+ABCDEF[1].gender+'; '+
+        'name: '+ABCDEF[2].name+', Gender: '+ABCDEF[2].gender+'; '+ 
+        'name: '+ABCDEF[3].name+', Gender: '+ABCDEF[3].gender+'; '+
+        'name: '+ABCDEF[4].name+', Gender: '+ABCDEF[4].gender
+        res.json(text)
+        var text = '';
+
+  // for (var i = 0; i < ABCDEF.length; i++) {
+    // text1 += ABCDEF[0].name+' '+ABCDEF[1].name+' '+ABCDEF[2].name+' '+ABCDEF[3].name+' '+ABCDEF[4].name
+    // text2 += ABCDEF[0].gender+' '+ABCDEF[1].gender+' '+ABCDEF[2].gender+' '+ABCDEF[3].gender+' '+ABCDEF[4].gender
+    // text += ABCDEF[0]+' '+ABCDEF[1]+' '+ABCDEF[2]+' '+ABCDEF[3]+' '+ABCDEF[4]
+  //   text += ABCDEF[i].name
+  //   res.json(text)
+  // }
+
+
+})
+
+
+// baiHocRoutes.route('/diemTrungBinh').get(function(req, res) {
+//   var tổngDiem = 0;
+//   for(i=0; i<baiTap.length; i++){
+//     tổngDiem += baiTap[i].diem
+//     console.log('tinhDiem: ' + tổngDiem)
+//   }
+  
 
 
 
 baiHocRoutes.route('/starWars/:idMuonXoa').delete(function(req, res) {
   let id = req.params.idMuonXoa;
-  console.log(id)
+  console.log('Đã xóa '+id)
+  res.json('Đã xóa')
 })
 
 baiHocRoutes.route('/starWars/').post(function(req, res) {
-  console.log(req.body)
+  console.log('Đã thêm '+req.body)
+  res.json('Đã thêm')
 })
 
 baiHocRoutes.route('/starWars/:idMuonSua').put(function(req, res) {
-    res.json('Đã sửa')
+  let id = req.params.idMuonSua
+  console.log('Đã sửa '+id)
+  res.json('Đã sửa')
 })
-
 
 
